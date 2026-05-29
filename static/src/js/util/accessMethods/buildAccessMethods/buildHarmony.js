@@ -42,13 +42,19 @@ export const buildHarmony = (serviceItem, params) => {
   } = serviceItem
 
   const outputFormats = []
+  const inputFormats = []
 
   if (supportedReformattings) {
     supportedReformattings.forEach((reformatting) => {
-      const { supportedOutputFormats } = reformatting
+      const { supportedOutputFormats, supportedInputFormat } = reformatting
 
       // Collect all supported output formats from each mapping
       outputFormats.push(...supportedOutputFormats)
+
+      // Collect all supported input formats from each mapping
+      if (supportedInputFormat) {
+        inputFormats.push(supportedInputFormat)
+      }
     })
   }
 
@@ -76,6 +82,7 @@ export const buildHarmony = (serviceItem, params) => {
       keywordMappings,
       longName,
       name,
+      supportedInputFormats: uniq(inputFormats),
       supportedOutputFormats: uniq(outputFormats),
       supportedOutputProjections: outputProjections,
       supportsBoundingBoxSubsetting: supportsBoundingBoxSubsetting(serviceItem),

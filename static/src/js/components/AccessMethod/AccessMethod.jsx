@@ -78,6 +78,7 @@ const AccessMethod = ({
     selectedVariables = [],
     selectedOutputFormat,
     selectedOutputProjection,
+    supportedInputFormats = [],
     supportedOutputFormats = [],
     supportedOutputProjections = [],
     supportsTemporalSubsetting = false,
@@ -630,6 +631,11 @@ const AccessMethod = ({
   // Default supportedOutputProjectionOptions
   let supportedOutputProjectionOptions = []
 
+  // Determine if native output format is supported (overlap between input and output formats)
+  const supportsNativeOutput = isHarmony && supportedInputFormats.length > 0 && supportedOutputFormats.length > 0
+    ? supportedInputFormats.some((inputFormat) => supportedOutputFormats.includes(inputFormat))
+    : false
+
   if (isHarmony) {
     // Filter the supportedOutputFormats to only those formats Harmony supports
     supportedOutputFormatOptions = supportedOutputFormats.filter(
@@ -962,7 +968,7 @@ const AccessMethod = ({
                     >
                       {
                         [
-                          <option key="output-format-none" value="">No Data Conversion</option>,
+                          ...(supportsNativeOutput ? [<option key="output-format-none" value="">No Data Conversion</option>] : []),
                           ...supportedOutputFormatOptions
                         ]
                       }
